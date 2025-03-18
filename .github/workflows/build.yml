@@ -29,7 +29,7 @@ jobs:
       run: python setup.py py2app  # 正式构建（去掉 -A 参数）
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: YourAppName
-        path: dist/*.app        # 上传生成的 .app 文件
+        name: zzfw_mac
+        path: dist/zzfw_mac.app        # 上传生成的 .app 文件
