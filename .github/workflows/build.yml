@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest  # 必须使用 macOS 环境
+    runs-on: macos-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -20,15 +20,14 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt  # 如有依赖库，需提前声明
-          python setup.py install  # 安装 py2app（通过 setup_requires）
+          pip install py2app  # 直接安装 py2app
 
       - name: Build .app with py2app
         run: |
-          python setup.py py2app  # 执行打包
+          python setup.py py2app
 
-      - name: Upload artifact
+      - name: Upload macOS App Artifact
         uses: actions/upload-artifact@v3
         with:
           name: MyApp-macOS
-          path: dist/MyApp.app  # 默认输出路径
+          path: dist/MyApp.app  # 确保路径与 py2app 输出一致
