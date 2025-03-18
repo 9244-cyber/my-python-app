@@ -1,33 +1,35 @@
-name: Build macOS App with py2app
+name: Build macOS App
 
 on:
   push:
+    branches: [main]  # 触发分支
+  pull_request:
     branches: [main]
-  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-latest  # 必须使用 macOS 环境
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'  # 使用与项目兼容的 Python 版本
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install py2app  # 直接安装 py2app
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install py2app
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Build .app with py2app
-        run: |
-          python setup.py py2app
+    - name: Build .app with py2app
+      run: python setup.py py2app  # 正式构建（去掉 -A 参数）
 
-      - name: Upload macOS App Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: MyApp-macOS
-          path: dist/MyApp.app  # 确保路径与 py2app 输出一致
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: YourAppName
+        path: dist/*.app        # 上传生成的 .app 文件
