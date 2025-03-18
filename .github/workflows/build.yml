@@ -1,24 +1,33 @@
-name: Build App
+name: Build macOS App with py2app
 
 on:
   push:
-    branches:
-      - main  # 当main分支有推送时触发工作流
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: macos-latest  # 在最新的macOS系统上运行
-
+    runs-on: macos-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3  # 检出代码到工作目录
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
-          brew install python  # 安装Python（如果系统中没有）
-          pip install briefcase  # 安装Briefcase
+          python -m pip install --upgrade pip
+          pip install py2app  # 直接安装 py2app
 
-      - name: Build app
+      - name: Build .app with py2app
         run: |
-          briefcase new  # 创建新的Briefcase项目（会有交互式提示，按提示填写信息）
-          briefcase build macos  # 打包成macOS的.app文件
+          python setup.py py2app
+
+      - name: Upload macOS App Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: MyApp-macOS
+          path: dist/MyApp.app  # 确保路径与 py2app 输出一致
